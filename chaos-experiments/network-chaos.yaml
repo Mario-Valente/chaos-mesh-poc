@@ -1,0 +1,81 @@
+# Network Latency - simula rede lenta entre Frontend e Backend
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: backend-latency
+  namespace: chaos-poc
+spec:
+  action: delay
+  mode: all
+  selector:
+    namespaces:
+      - chaos-poc
+    labelSelectors:
+      app: backend
+  delay:
+    latency: "500ms"
+    jitter: "100ms"
+  duration: "5m"
+  scheduler:
+    cron: "@hourly"
+---
+# Packet Loss - simula perda de pacotes
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: backend-packet-loss
+  namespace: chaos-poc
+spec:
+  action: loss
+  mode: all
+  selector:
+    namespaces:
+      - chaos-poc
+    labelSelectors:
+      app: backend
+  loss:
+    loss: "30%"
+  duration: "5m"
+  scheduler:
+    cron: "@hourly"
+---
+# Bandwidth Throttling - limita a largura de banda
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: backend-bandwidth-limit
+  namespace: chaos-poc
+spec:
+  action: bandwidth
+  mode: all
+  selector:
+    namespaces:
+      - chaos-poc
+    labelSelectors:
+      app: backend
+  bandwidth:
+    rate: "1mbps"
+    limit: 2000000
+    buffer: 10000
+  duration: "5m"
+  scheduler:
+    cron: "@hourly"
+---
+# Network Partition - isola completamente o serviço
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: postgres-partition
+  namespace: chaos-poc
+spec:
+  action: partition
+  mode: all
+  selector:
+    namespaces:
+      - chaos-poc
+    labelSelectors:
+      app: postgres
+  direction: both
+  duration: "2m"
+  scheduler:
+    cron: "@hourly"

@@ -1,0 +1,87 @@
+# CPU Stress - consome CPU do backend
+apiVersion: chaos-mesh.org/v1alpha1
+kind: StressChaos
+metadata:
+  name: backend-cpu-stress
+  namespace: chaos-poc
+spec:
+  action: stress
+  mode: all
+  selector:
+    namespaces:
+      - chaos-poc
+    labelSelectors:
+      app: backend
+  stressors:
+    cpu:
+      workers: 2
+      load: 80
+  duration: "5m"
+  scheduler:
+    cron: "@hourly"
+---
+# Memory Stress - consome memória do backend
+apiVersion: chaos-mesh.org/v1alpha1
+kind: StressChaos
+metadata:
+  name: backend-memory-stress
+  namespace: chaos-poc
+spec:
+  action: stress
+  mode: all
+  selector:
+    namespaces:
+      - chaos-poc
+    labelSelectors:
+      app: backend
+  stressors:
+    memory:
+      workers: 1
+      size: "256Mi"
+  duration: "5m"
+  scheduler:
+    cron: "@hourly"
+---
+# PostgreSQL Memory Pressure - estresse de memória no banco
+apiVersion: chaos-mesh.org/v1alpha1
+kind: StressChaos
+metadata:
+  name: postgres-memory-stress
+  namespace: chaos-poc
+spec:
+  action: stress
+  mode: all
+  selector:
+    namespaces:
+      - chaos-poc
+    labelSelectors:
+      app: postgres
+  stressors:
+    memory:
+      workers: 1
+      size: "256Mi"
+  duration: "5m"
+  scheduler:
+    cron: "@hourly"
+---
+# Disk I/O Stress - estresse no disco
+apiVersion: chaos-mesh.org/v1alpha1
+kind: StressChaos
+metadata:
+  name: postgres-io-stress
+  namespace: chaos-poc
+spec:
+  action: stress
+  mode: all
+  selector:
+    namespaces:
+      - chaos-poc
+    labelSelectors:
+      app: postgres
+  stressors:
+    io:
+      workers: 1
+      size: "1Gi"
+  duration: "5m"
+  scheduler:
+    cron: "@hourly"

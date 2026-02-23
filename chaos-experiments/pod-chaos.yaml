@@ -1,0 +1,57 @@
+# Pod Kill - mata os pods do backend
+apiVersion: chaos-mesh.org/v1alpha1
+kind: PodChaos
+metadata:
+  name: backend-pod-kill
+  namespace: chaos-poc
+spec:
+  action: pod-kill
+  mode: fixed
+  value: 1
+  selector:
+    namespaces:
+      - chaos-poc
+    labelSelectors:
+      app: backend
+  duration: "2m"
+  scheduler:
+    cron: "@hourly"
+---
+# Pod Failure - marca pods como falhados
+apiVersion: chaos-mesh.org/v1alpha1
+kind: PodChaos
+metadata:
+  name: backend-pod-failure
+  namespace: chaos-poc
+spec:
+  action: pod-failure
+  mode: fixed-percent
+  value: 50
+  selector:
+    namespaces:
+      - chaos-poc
+    labelSelectors:
+      app: backend
+  duration: "3m"
+  scheduler:
+    cron: "@hourly"
+---
+# Container Kill - mata containers específicos
+apiVersion: chaos-mesh.org/v1alpha1
+kind: PodChaos
+metadata:
+  name: postgres-container-kill
+  namespace: chaos-poc
+spec:
+  action: container-kill
+  mode: all
+  selector:
+    namespaces:
+      - chaos-poc
+    labelSelectors:
+      app: postgres
+  containerNames:
+    - postgres
+  duration: "2m"
+  scheduler:
+    cron: "@hourly"
